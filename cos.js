@@ -26,7 +26,7 @@ exports.uploadFolder = function (localFolder, remotePrefix) {
     util.fastListFolder(localFolder, function (err, list) {
         if (err) return console.error(err);
         let files = list.map(function (file) {
-            const filename = path.relative(localFolder, file.path).replace(/\\/g, '/');
+            let filename = path.relative(localFolder, file.path).replace(/\\/g, '/');
             if (filename && file.isDir && !filename.endsWith('/')) filename += '/';
             const fileKey = remotePrefix + filename;
             return {
