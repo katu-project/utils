@@ -1,6 +1,6 @@
 {
   "name": "@katucloud/utils",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "katucloud utils",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/katu-project/utils#readme",
   "dependencies": {
+    "batch": "^0.6.1",
+    "cos-nodejs-sdk-v5": "^2.12.5",
     "dotenv": "^16.3.1",
     "tencentcloud-sdk-nodejs": "^4.0.717"
   }
