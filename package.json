@@ -1,0 +1,23 @@
+{
+  "name": "@katucloud/utils",
+  "version": "1.1.0",
+  "description": "katucloud utils",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/katu-project/utils.git"
+  },
+  "author": "katu-project",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/katu-project/utils/issues"
+  },
+  "homepage": "https://github.com/katu-project/utils#readme",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "tencentcloud-sdk-nodejs": "^4.0.717"
+  }
+}
