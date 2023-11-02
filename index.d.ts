@@ -13,7 +13,7 @@ declare namespace utils {
 
     }
     namespace cdn {
-        function refreshDirs<T>(name:string[], options?:{config?:CloudConfig}):  Promise<T>
+        function refreshDirs<T>(name:string[], options?:{config?:CloudConfig}): Promise<T>
 
     }
     namespace scf{

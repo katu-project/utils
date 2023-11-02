@@ -54,7 +54,7 @@ function fastListFolder(options, callback) {
         if (err) {
             callback(err);
         } else if (list.length > 1000000) {
-            callback(window.lang.t('error.too_much_files'));
+            callback(Error('error.too_much_files'));
         } else {
             callback(null, list);
         }
@@ -71,8 +71,11 @@ function fastListFolder(options, callback) {
     };
     fs.stat(rootPath, function(err, stat) {
         if (err) return _callback();
+        // @ts-ignore
         stat.isDir = true;
+        // @ts-ignore
         stat.path = pathJoin(rootPath, '', true);
+        // @ts-ignore
         stat.isDir && (stat.size = 0);
         deep(stat, _callback);
     });
