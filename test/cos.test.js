@@ -1,3 +1,3 @@
 const utils = require('../index')
-require('dotenv').config()
-utils.cos['getTest']()
+const config = require('dotenv').config().parsed
+utils.cos['getTest']({config})
