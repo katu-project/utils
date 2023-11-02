@@ -1,18 +1,24 @@
-type cdn = {
-    refreshDirs(name:string): any
+type CloudConfig = {
+    SecretId: string
+    SecretKey: string
+    Region?: string
+    Bucket?: string
 }
 
-type cos = {
-    uploadFolder(localFolder:string, remotePrefix:string): any
+declare namespace utils {
+    namespace cos {
+        function uploadFolder<T>(localFolder:string, remotePrefix:string, options?:{
+            config?: CloudConfig
+        }): Promise<T>
+
+    }
+    namespace cdn {
+        function refreshDirs<T>(name:string[], options?:{config?:CloudConfig}):  Promise<T>
+
+    }
+    namespace scf{
+
+    }
 }
 
-type csf = {
-}
-
-interface IActions {
-    cdn: cdn,
-    cos: cos
-    csf: csf
-}
-
-export function getAction<T extends keyof IActions>(name: T, configPath?:string): IActions[T]
+export = utils

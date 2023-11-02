@@ -13,7 +13,6 @@
 1. 加载
     ```
     const utils = require('@katucloud/utils')
-    const cdn = utils.getAction('cdn')
     ```
 
 1. cdn 刷新
