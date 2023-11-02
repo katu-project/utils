@@ -4,13 +4,6 @@ const COS = require('cos-nodejs-sdk-v5');
 
 function getClient(config){
     config = {
-        SecretId: process.env['SecretId'],
-        SecretKey: process.env['SecretKey'],
-        Bucket: process.env['Bucket'],
-        Region: process.env['Region'],
-        ...config
-    }
-    const cos = new COS({
         // 必选参数
         SecretId: config.SecretId,
         SecretKey: config.SecretKey,
@@ -21,13 +14,14 @@ function getClient(config){
         Proxy: '',
         Protocol: 'https:',
         FollowRedirect: false,
-    })
-    cos['config'] = config
-    return cos
+    }
+    if(!config.SecretId || !config.SecretKey ) throw Error('no SecretID/Key set')
+    return new COS(config)
 }
 
-exports.uploadFolder = async function (localFolder, remotePrefix, {config}) {
-    const cos = getClient(config)
+exports.uploadFolder = async function (localFolder, remotePrefix, options) {
+    const { config={} } = options || {}
+    const client = getClient(config)
     return new Promise((resolve, reject)=>{
         util.fastListFolder(localFolder, function (err, list) {
             if (err) return console.error(err);
@@ -44,7 +38,7 @@ exports.uploadFolder = async function (localFolder, remotePrefix, {config}) {
             }).filter(e => !e.FilePath.endsWith('.DS_Store') && !e.FilePath.endsWith('/'))
             //console.log(files.slice(0,5))
     
-            cos.uploadFiles(
+            client.uploadFiles(
                 {
                     files: files,
                     SliceSize: 1024 * 1024,
@@ -64,9 +58,10 @@ exports.uploadFolder = async function (localFolder, remotePrefix, {config}) {
     })
 }
 
-exports.getTest = async function(){
-    const cos = getClient()
-    cos.getService({},(err,res)=>{
+exports.getTest = async function(options){
+    const { config={} } = options || {}
+    const client = getClient(config)
+    client.getService({},(err,res)=>{
         if(err){
             console.log('test error', err)
         }else{

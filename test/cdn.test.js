@@ -1,3 +1,3 @@
 const utils = require('../index')
-require('dotenv').config()
-utils.cdn['getTest']()
+const config = require('dotenv').config().parsed
+utils.cdn['getTest']({config})
