@@ -26,26 +26,11 @@ exports.refreshDirs = async function(dirs, options){
         Paths: dirs,
         FlushType: "delete"
     };
-    return new Promise((resolve, reject)=>{
-        client.PurgePathCache(params).then(
-            (data) => {
-                resolve(data)
-            },
-            (err) => {
-                reject(err)
-            }
-        );
-    })
+    return client.PurgePathCache(params)
 }
 
-exports.getTest = async function(options){
+exports.getDomainList = async function(options){
     const { config={} } = options || {}
     const client = getClient(config)
-    const { RequestId, Domains } = await client.DescribeDomains({})
-    if(RequestId && Domains) {
-        console.log('test ok')
-        console.table(Domains)
-    }else{
-        console.log('test error')
-    }
+    return client.DescribeDomains({}).then(({Domains})=>Domains)
 }
