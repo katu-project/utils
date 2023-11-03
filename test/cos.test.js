@@ -1,8 +1,8 @@
 // @ts-nocheck
 const path = require('path')
-const utils = require('../index')
+const utils = require('../src/index')
 const config = require('dotenv').config().parsed
-utils.cos.uploadFile('./index.js', 'test/index.js', {
+utils.cos.uploadFile(path.join(__dirname,'./index.js'), 'test/index.js', {
     config
 })
 

@@ -1,5 +1,5 @@
 // @ts-nocheck
-const utils = require('../index')
+const utils = require('../src/index')
 const config = require('dotenv').config().parsed
 const commonConfig = {config, namespace:'katu'}
 utils.scf.getFuncList(commonConfig)
