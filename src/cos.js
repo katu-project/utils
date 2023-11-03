@@ -19,6 +19,20 @@ function getClient(config){
     return new COS(config)
 }
 
+exports.uploadFile = async function(localPath, remotePath, options) {
+    const { config={} } = options || {}
+    const client = getClient(config)
+    return client.uploadFile({
+        Bucket: config.Bucket,
+        Region: config.Region,
+        FilePath: localPath,
+        Key: remotePath,
+        onFileFinish: function (err, _, options) {
+            console.log(options.Key + ' 上传' + (err ? '失败' : '完成'));
+        }
+    })
+  }
+
 exports.uploadFolder = async function (localFolder, remotePrefix, options) {
     const { config={} } = options || {}
     const client = getClient(config)
@@ -55,23 +69,5 @@ exports.uploadFolder = async function (localFolder, remotePrefix, options) {
                 },
             );
         });
-    })
-}
-
-exports.getTest = async function(options){
-    const { config={} } = options || {}
-    const client = getClient(config)
-    client.getService({},(err,res)=>{
-        if(err){
-            console.log('test error', err)
-        }else{
-            if(res.Buckets){
-                console.log('test ok')
-                console.table(res.Buckets)
-            }else{
-                console.log('test error', res)
-            }
-        }
-        
     })
 }

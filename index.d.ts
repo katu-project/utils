@@ -10,7 +10,9 @@ declare namespace utils {
         function uploadFolder<T>(localFolder:string, remotePrefix:string, options?:{
             config?: CloudConfig
         }): Promise<T>
-
+        function uploadFile<T>(localPath:string, remotePath:string, options?:{
+            config?: CloudConfig
+        }): Promise<T>
     }
     namespace cdn {
         function refreshDirs<T>(name:string[], options?:{config?:CloudConfig}): Promise<T>
