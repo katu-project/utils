@@ -31,7 +31,7 @@ exports.uploadFile = async function(localPath, remotePath, options) {
             console.log(options.Key + ' 上传' + (err ? '失败' : '完成'));
         }
     })
-  }
+}
 
 exports.uploadFolder = async function (localFolder, remotePrefix, options) {
     const { config={} } = options || {}
@@ -70,4 +70,50 @@ exports.uploadFolder = async function (localFolder, remotePrefix, options) {
             );
         });
     })
+}
+
+exports.createCompressTask = async function(packDir, options){
+    const { config={}, compressConfig={}, outputConfig={} } = options || {}
+    const client = getClient(config)
+
+    if(!outputConfig.Object) throw Error('没有指定输出对象')
+    const host = config.Bucket + '.ci.' + config.Region + '.myqcloud.com/file_jobs';
+    const url = 'https://' + host;
+    const body = COS.util.json2xml({
+        Request: {
+            Tag: 'FileCompress', // 必须
+            Operation: {
+                FileCompressConfig: {
+                    Flatten: '0', // 文件打包时，是否需要去除源文件已有的目录结构.0:不需要;1:需要
+                    Format: 'zip', // 打包压缩的类型，有效值：zip、tar、tar.gz
+                    Type: 'default',
+                    CompressKey: '',
+                    // UrlList、Prefix、Key 三者仅能选择一个，不能都为空，也不会同时生效
+                    // UrlList: '', // 索引文件的对象地址
+                    Prefix: packDir.endsWith('/')? packDir : packDir+'/', // 目录前缀
+                    Key: [''], // 支持对存储桶中的多个文件进行打包，个数不能超过 1000, 总大小不超过50G，否则会导致任务失败
+                    IgnoreError: 'false',
+                    ...compressConfig
+                },
+                Output: {
+                    Bucket: config.Bucket, // 保存压缩后文件的存储桶
+                    Region: config.Region, // 保存压缩后文件的存储桶地域
+                    Object: '', // 压缩后文件的文件名
+                    ...outputConfig
+                },
+                UserData: '',
+            },
+            // QueueId: '', // 任务所在的队列 ID
+            // CallBack: 'http://callback.demo.com', // 任务回调的地址
+            // CallBackFormat: 'JSON', // 任务回调格式
+            // CallBackType: 'Url', // 任务回调类型，Url 或 TDMQ，默认 Url
+        },
+    });
+    return client.request({
+        Method: 'POST',
+        Key: 'file_jobs',
+        Url: url,
+        Body: body,
+        ContentType: 'application/xml',
+    }).then(e=>e.Response)
 }

@@ -12,6 +12,27 @@ declare namespace utils {
     namespace cos {
         function uploadFolder<T>(localFolder:string, remotePrefix:string, options?:CloudOptions): Promise<T>
         function uploadFile<T>(localPath:string, remotePath:string, options?:CloudOptions): Promise<T>
+        function createCompressTask<T>(
+            compressDir: string,
+            options: {
+                config: CloudConfig
+                compressConfig: {
+                    Flatten?: string
+                    Format?: string
+                    Type?: string
+                    CompressKey?: string
+                    UrlList?: string
+                    Prefix?: string
+                    Key?: string[]
+                    IgnoreError?: string
+                }
+                outputConfig: {
+                    Bucket?: string
+                    Region?: string
+                    Object: string
+                }
+            }
+        ): Promise<T>
     }
     namespace cdn {
         function refreshDirs<T>(name:string[], options?:CloudOptions): Promise<T>
