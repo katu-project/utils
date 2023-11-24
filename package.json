@@ -1,6 +1,6 @@
 {
   "name": "@katucloud/utils",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "katucloud utils",
   "main": "src/index.js",
   "scripts": {
@@ -23,6 +23,7 @@
     "tencentcloud-sdk-nodejs": "^4.0.717"
   },
   "devDependencies": {
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "uni-utils": "^1.1.0"
   }
 }

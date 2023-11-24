@@ -19,6 +19,17 @@ function getClient(config){
     return new COS(config)
 }
 
+async function getList(dir, options){
+    const { config={} } = options || {}
+    const client = getClient(config)
+    return client.getBucket({
+        Bucket: config.Bucket,
+        Region: config.Region,
+        Prefix: dir
+    }).then(e=>e.Contents)
+}
+exports.getList = getList
+
 exports.uploadFile = async function(localPath, remotePath, options) {
     const { config={} } = options || {}
     const client = getClient(config)
@@ -116,4 +127,29 @@ exports.createCompressTask = async function(packDir, options){
         Body: body,
         ContentType: 'application/xml',
     }).then(e=>e.Response)
+}
+
+exports.deleteFile = async function(filepath, options){
+    const { config={} } = options || {}
+    const client = getClient(config)
+    return client.deleteObject({
+        Bucket: config.Bucket,
+        Region: config.Region,
+        Key: filepath
+    })
+}
+
+exports.deleteDir = async function(dir, options){
+    const { config={} } = options || {}
+    const client = getClient(config)
+    const list = await getList(dir, options)
+    const objects = list.map(function (item) {
+        return {Key: item.Key}
+    })
+    if(!objects.length) return
+    return client.deleteMultipleObject({
+        Bucket: config.Bucket,
+        Region: config.Region,
+        Objects: objects
+    })
 }

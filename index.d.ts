@@ -10,8 +10,11 @@ type CloudOptions = {
 
 declare namespace utils {
     namespace cos {
-        function uploadFolder<T>(localFolder:string, remotePrefix:string, options?:CloudOptions): Promise<T>
-        function uploadFile<T>(localPath:string, remotePath:string, options?:CloudOptions): Promise<T>
+        function getList<T>(dir:string, options:CloudOptions): Promise<T[]>
+        function deleteFile<T>(filepath:string, options:CloudOptions): Promise<T>
+        function deleteDir<T>(dir:string, options:CloudOptions): Promise<T>
+        function uploadFolder<T>(localFolder:string, remotePrefix:string, options:CloudOptions): Promise<T>
+        function uploadFile<T>(localPath:string, remotePath:string, options:CloudOptions): Promise<T>
         function createCompressTask<T>(
             compressDir: string,
             options: {
