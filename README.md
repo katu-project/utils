@@ -2,25 +2,47 @@
 
 
 
-### Usage
+### 安装
+```bash
+npm i @katucloud/utils
+```
 
-1. 安装
+### 加载
+```js
+const { cdn, cos } = require('@katucloud/utils')
+```
 
-    ```
-    npm i -D @katucloud/utils
-    ```
+### 使用
+#### 通用配置
+```js
+const config = {
+    SecretId: '',
+    SecretKey: '',
+    // cdn
+    // cos
+    Bucket: '',
+    Region: ''
+}
+```
 
-1. 加载
-    ```
-    const utils = require('@katucloud/utils')
-    ```
+#### cdn
+```js
+cdn.refreshDirs
 
-1. cdn 刷新
-    ```
-    utils.cdn.refreshDirs(dirs)
-    ```
+cdn.getDomainList
+```
 
-2. cos 上传
-    ```
-    utils.cos.push(localDirs, remotePrefix)
-    ```
+#### cos
+```js
+cos.getList
+
+cos.uploadFile
+
+cos.uploadFolder
+
+cos.deleteFile
+
+cos.deleteDir
+
+cos.createCompressTask
+```
