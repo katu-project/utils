@@ -38,6 +38,51 @@ exports.getFunc = async function(name, options){
     }
 }
 
+exports.getLayer = async function(name, options){
+  const { config={},  } = options || {}
+  const client = getClient(config)
+  const layerInfo = await client.ListLayers({
+    SearchKey: name
+  })
+  return layerInfo.Layers.length === 1 && layerInfo.Layers[0].LayerName === name ? layerInfo.Layers[0] : layerInfo.Layers
+}
+
+exports.getLayerVersion = async function(name, ver, options){
+  const { config={},  } = options || {}
+  const client = getClient(config)
+  const layerInfo = await client.GetLayerVersion({
+      LayerName: name,
+      LayerVersion: ver
+  })
+  return layerInfo
+}
+
+exports.deleteLayerVersion = async function(name, ver, options){
+  const { config={} } = options || {}
+  const client = getClient(config)
+  const layerInfo = await client.DeleteLayerVersion({
+      LayerName: name,
+      LayerVersion: ver
+  })
+  return layerInfo
+}
+
+exports.createLayerVersionFromCos = async function(name, layer, options){
+  const { config={} } = options || {}
+  const client = getClient(config)
+  const layerInfo = await client.PublishLayerVersion({
+      LayerName: name,
+      CompatibleRuntimes: layer.runtime || ['Nodejs18.15', 'Nodejs16.13'],
+      Content: {
+        CosBucketName: layer.cosBucket,
+        CosObjectName: layer.cosObject,
+        CosBucketRegion: layer.cosRegion
+      },
+      Description: layer.desc || ''
+  })
+  return layerInfo.LayerVersion
+}
+
 exports.updateCodeByCos = async function(name, cos, options){
     const { config={}, namespace='' } = options || {}
     const client = getClient(config)
