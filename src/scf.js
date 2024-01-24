@@ -116,3 +116,15 @@ exports.updateFuncEnv = async function(name, env, options){
         }
     })
 }
+
+exports.updateFuncLayerConfig = async function(name, layerConfig, options){
+  const { config={}, namespace='' } = options || {}
+  const client = getClient(config)
+  return client.UpdateFunctionConfiguration({
+      Namespace: namespace,
+      FunctionName: name,
+      Layers: [
+        layerConfig
+      ]
+  })
+}
