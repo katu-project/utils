@@ -12,6 +12,7 @@ function getClient(config){
     if(!config.region || !config.credential.secretId || !config.credential.secretKey ) throw Error('no SecretID/Key or region set')
     return new ScfClient(config)
 }
+exports.getClient = getClient
 
 exports.getFuncList = async function(options){
     const { config={}, namespace='' } = options || {}
