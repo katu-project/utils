@@ -1,5 +1,6 @@
 const tencentcloud = require('tencentcloud-sdk-nodejs');
 const ScfClient = tencentcloud.scf.v20180416.Client
+const utils = require('uni-utils')
 
 function getClient(config){
     config = {
@@ -13,6 +14,25 @@ function getClient(config){
     return new ScfClient(config)
 }
 exports.getClient = getClient
+
+const waitFunctionActive = exports.waitFunctionActive = async (name, version, options)=>{
+    const waitCount = 3
+    const { config={}, namespace='' } = options || {}
+    const client = getClient(config)
+
+    for (let index = 0; index < waitCount; index++) {
+        await utils.sleep(3000)
+        const functionDetail = await client.GetFunction({
+            Namespace: namespace,
+            FunctionName: name,
+            Qualifier: version || '$LATEST'
+        })
+        if(functionDetail.Status === 'Active'){
+            return functionDetail
+        }
+    }
+    throw Error('wait timeout')
+}
 
 exports.getFuncList = async function(options){
     const { config={}, namespace='' } = options || {}
@@ -128,4 +148,74 @@ exports.updateFuncLayerConfig = async function(name, layerConfig, options){
         layerConfig
       ]
   })
+}
+
+exports.startPersistentInstance = async function(name, options){
+    const VersionToken = 'persistent'
+    const { config={}, namespace='' } = options || {}
+    const client = getClient(config)
+    const newVersion = await client.PublishVersion({
+        Namespace: namespace,
+        FunctionName: name,
+        Description: VersionToken
+    })
+    console.log('1. 发布长驻版本:',newVersion.Description,newVersion.FunctionVersion)
+    const version = newVersion.FunctionVersion
+    await waitFunctionActive(name, version, options)
+ 
+    client.UpdateAlias({
+        Namespace: namespace,
+        FunctionName: name,
+        Name: '$DEFAULT',
+        FunctionVersion: '$LATEST',
+        RoutingConfig: {
+            AdditionalVersionWeights: [
+                {
+                    Version: version,
+                    Weight: 1.0
+                }
+            ]
+        }
+    })
+    await waitFunctionActive(name, version, options)
+    console.log('2. 把流量转移到长驻版本:',newVersion.Description,newVersion.FunctionVersion)
+
+    await client.PutProvisionedConcurrencyConfig({
+        Namespace: namespace,
+        FunctionName: name,
+        Qualifier: version,
+        VersionProvisionedConcurrencyNum: 1
+    })
+    console.log('3. 激活长驻版本实例:',newVersion.Description,newVersion.FunctionVersion)
+}
+
+
+exports.cancelPersistentInstance = async function(name, options){
+    const VersionToken = 'persistent'
+    const { config={}, namespace='' } = options || {}
+    const client = getClient(config)
+    await client.UpdateAlias({
+        Namespace: namespace,
+        FunctionName: name,
+        Name: '$DEFAULT',
+        FunctionVersion: '$LATEST'
+    })
+    await waitFunctionActive(name, '$LATEST', options)
+
+    const listVersion = await client.ListVersionByFunction({
+        Namespace: namespace,
+        FunctionName: name  
+    })
+    for (const v of listVersion.Versions) {
+        if(v.Description === VersionToken){
+            const version = v.Version
+            console.log('删除存在的长驻实例版本',version)  
+            await client.DeleteFunction({
+                Namespace: namespace,
+                FunctionName: name,
+                Qualifier: version
+            })
+            await waitFunctionActive(name, null, options)
+        }
+    }
 }

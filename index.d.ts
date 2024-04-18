@@ -75,6 +75,9 @@ declare namespace utils {
       function deleteFunc(name:string, options?:CloudOptions)
       function updateFuncEnv(name:string, env: UpdateFuncEnvConfig, options?:CloudOptions)
       function updateFuncLayerConfig(name:string, layerConfig:UpdateFuncLayerConfig, options?:CloudOptions)
+      function waitFunctionActive(name:string, version:string, options?:CloudOptions)
+      function startPersistentInstance(name:string, options?:CloudOptions)
+      function cancelPersistentInstance(name:string, options?:CloudOptions)
     }
 }
 
