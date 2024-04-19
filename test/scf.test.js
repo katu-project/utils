@@ -3,7 +3,7 @@ const utils = require('../src/index')
 const config = require('dotenv').config().parsed
 const commonConfig = {config, namespace:'default'}
 const persistentInstanceConfig = {
-    config: Object.assign(config,{
+    config: Object.assign({}, config, {
         Region: config.PersistentInstanceFunctionRegion,
     }),
     namespace: config.PersistentInstanceFunctionNamespace

@@ -8,6 +8,7 @@ type CloudConfig = {
 }
 type CloudOptions = {
     config?: CloudConfig
+    namespace?: string
 }
 
 type UpdateFuncEnvConfig = {
