@@ -7,6 +7,7 @@ type CloudConfig = {
     Bucket?: string
 }
 type CloudOptions = {
+    debug?: boolean
     config?: CloudConfig
     namespace?: string
 }

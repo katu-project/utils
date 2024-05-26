@@ -1,6 +1,6 @@
 {
   "name": "@katucloud/utils",
-  "version": "1.9.1",
+  "version": "1.9.2",
   "description": "katucloud utils",
   "main": "src/index.js",
   "scripts": {

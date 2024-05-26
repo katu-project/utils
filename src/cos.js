@@ -38,6 +38,9 @@ exports.uploadFile = async function(localPath, remotePath, options) {
         Region: config.Region,
         FilePath: localPath,
         Key: remotePath,
+        onProgress: function(e){
+            options.debug && console.log(`upload:${e.percent*100}%`)
+        },
         onFileFinish: function (err, _, options) {
             console.log(options.Key + ' 上传' + (err ? '失败' : '完成'));
         }
